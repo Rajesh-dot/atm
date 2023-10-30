@@ -1,67 +1,56 @@
-package entities;
+// package entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+// import javax.persistence.CascadeType;
+// import javax.persistence.Column;
+// import javax.persistence.Entity;
+// import javax.persistence.GeneratedValue;
+// import javax.persistence.GenerationType;
+// import javax.persistence.Id;
+// import javax.persistence.OneToOne;
+// import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+// import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-@Entity
-@Table(name = "user")
-public class User {
+// @Entity
+// @Table(name = "user")
+// public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "book_id")
-    private int id;
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.AUTO)
+//     @Column(name = "user_id")
+//     private int id;
 
-    private String title;
+//     private String name;
+//     private String mobileNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)   
-    @JsonManagedReference 
-    private Author author;
+//     @OneToOne(cascade = CascadeType.ALL)   
+//     @JsonManagedReference 
+//     private String author;
 
-    public User(int id, String title, Author author) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-    }
+//     public User(String name, String mobileNumber) {
+//         this.name = name;
+//         this.mobileNumber = mobileNumber;
+//     }
 
-    public User() {
-    }
+//     public int getId() {
+//         return id;
+//     }
 
-    public int getId() {
-        return id;
-    }
+//     public void setId(int id) {
+//         this.id = id;
+//     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+//     public String getMobileNumber() {
+//         return this.mobileNumber;
+//     }
 
-    public String getTitle() {
-        return title;
-    }
+//     public void setName(String name) {
+//         this.name = name;
+//     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+//     @Override
+//     public String toString() {
+//         return "Book [id=" + id + ", name=" + name + "]";
+//     }
 
-    // public Author getAuthor() {
-    //     return author;
-    // }
-
-    // public void setAuthor(Author author) {
-    //     this.author = author;
-    // }
-
-    @Override
-    public String toString() {
-        return "Book [id=" + id + ", title=" + title + "]";
-    }
-
-}
+// }
