@@ -1,16 +1,13 @@
 package entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Random;
 import java.util.UUID;
@@ -27,22 +24,26 @@ public class Account {
     private String accountNumber;
     private String atmPin;
     private double balance;
+
     @ManyToOne
     private Bank bank;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private String author;
+    @ManyToOne
+    private User user;
 
-    public Account(String atmPin) {
+    public Account(String atmPin, Bank bank, User user) {
         this.balance = 0;
         this.accountNumber = generateRandomAccountNumber();
         this.atmPin = atmPin;
+        this.bank = bank;
+        this.user = user;
     }
 
-    public Account() {
+    public Account(Bank bank, User user) {
         this.balance = 0;
         this.accountNumber = generateRandomAccountNumber();
+        this.bank = bank;
+        this.user = user;
     }
 
     public int getId() {
@@ -98,9 +99,17 @@ public class Account {
         this.balance += amount;
     }
 
+    public boolean hasAccess(User user) {
+        if (user.getId() == user.getId()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
-        return "Bank [id=" + id + ", accountNumber=" + accountNumber + "]";
+        return "Account [id=" + id + ", accountNumber=" + accountNumber + ", userName=" + user.getUsername() + "]";
     }
 
     public static String generateRandomAccountNumber() {

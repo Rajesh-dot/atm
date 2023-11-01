@@ -2,17 +2,14 @@ package entities;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "transaction")
@@ -23,29 +20,24 @@ public class Transaction {
     @Column(name = "transaction_id")
     private int id;
 
-    private Account account;
-
     private LocalDateTime transactionDate;
     private String transactionType;
     private double amount;
     private int status;
 
     @ManyToOne
-    private Account sourceAccount;
+    private Account account;
 
     @ManyToOne
-    private Account targetAccount;
+    private Atm sourceMachine;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private String author;
-
-    public Transaction(Account account, Double amount, String transactionType) {
+    public Transaction(Account account, Double amount, String transactionType, Atm sourceMachine) {
         this.account = account;
         this.amount = amount;
         this.transactionType = transactionType;
         this.transactionDate = LocalDateTime.now();
         this.status = 0;
+        this.sourceMachine = sourceMachine;
     }
 
     public int getId() {
@@ -74,6 +66,14 @@ public class Transaction {
 
     public LocalDateTime getTransactionDate() {
         return this.transactionDate;
+    }
+
+    public Account getAccount() {
+        return this.account;
+    }
+
+    public Atm getSourceMachine() {
+        return this.sourceMachine;
     }
 
     @Override

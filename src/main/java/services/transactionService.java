@@ -14,12 +14,7 @@ public class transactionService {
 
     // get transaction by id
     public Transaction getTransactionById(int id) {
-        Transaction transaction = null;
-        try {
-            transaction = this.transactionRepository.findById(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Transaction transaction = this.transactionRepository.findById(id);
         return transaction;
     }
 

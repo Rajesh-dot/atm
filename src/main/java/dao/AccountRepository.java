@@ -6,4 +6,6 @@ import entities.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
     public Account findById(int id);
+
+    public Account findByAccountNumber(String accountNumber);
 }

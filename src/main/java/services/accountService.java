@@ -26,17 +26,12 @@ public class accountService {
 
     // get account by id
     public Account getAccountById(int id) {
-        Account account = null;
-        try {
-            account = this.accountRepository.findById(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Account account = this.accountRepository.findById(id);
         return account;
     }
 
     // creating new account
-    public Account addBook(Account account) {
+    public Account createAccount(Account account) {
         Account result = accountRepository.save(account);
         return result;
     }
@@ -95,6 +90,10 @@ public class accountService {
         accountRepository.save(account);
         transaction.updateStatus(-2);
         this.transactionRepository.save(transaction);
+    }
+
+    public Account getAccountByAccountNumber(String AccountNumber) {
+        return this.accountRepository.findByAccountNumber(AccountNumber);
     }
 
     // get pending transactions
