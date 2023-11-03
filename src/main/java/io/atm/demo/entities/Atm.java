@@ -1,12 +1,12 @@
-package entities;
+package io.atm.demo.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "atm")
@@ -15,24 +15,23 @@ public class Atm {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "atm_id")
-    private int id;
+    private Long id;
 
     @ManyToOne
     private Bank bank;
 
     private double balance;
 
-    public Atm(int id, String name, Bank bank) {
-        this.id = id;
+    public Atm(String name, Bank bank) {
         this.bank = bank;
         this.balance = 0;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

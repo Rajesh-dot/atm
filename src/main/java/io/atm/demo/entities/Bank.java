@@ -1,13 +1,12 @@
-package entities;
+package io.atm.demo.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bank")
@@ -16,15 +15,14 @@ public class Bank {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bank_id")
-    private int id;
+    private Long id;
 
     private String name;
 
     @ManyToOne
     private User admin;
 
-    public Bank(int id, String name, User admin) {
-        this.id = id;
+    public Bank(String name, User admin) {
         this.name = name;
         this.admin = admin;
     }
@@ -32,11 +30,11 @@ public class Bank {
     public Bank() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -49,7 +47,7 @@ public class Bank {
     }
 
     public boolean isBankAdmin(User user) {
-        if(this.admin.getId() == user.getId()) {
+        if (this.admin.getId() == user.getId()) {
             return true;
         } else {
             return false;

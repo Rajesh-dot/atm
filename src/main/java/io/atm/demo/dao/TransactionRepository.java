@@ -1,16 +1,17 @@
-package dao;
+package io.atm.demo.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import entities.Account;
-import entities.Transaction;
+import io.atm.demo.entities.Account;
+import io.atm.demo.entities.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    public Transaction findById(int id);
+    public Optional<Transaction> findById(Long id);
 
-    public List<Transaction> findByStatusAndOrderByTransactionDateAsc(int status);
+    public List<Transaction> findByStatusOrderByTransactionDateAsc(int status);
 
     public List<Transaction> findByAccountOrderByTransactionDateAsc(Account account);
 

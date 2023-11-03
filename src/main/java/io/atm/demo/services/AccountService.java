@@ -1,17 +1,19 @@
-package services;
+package io.atm.demo.services;
 
 import java.util.List;
-import dao.AccountRepository;
-import dao.TransactionRepository;
-import entities.Account;
-import entities.Transaction;
-import exceptions.CustomException;
+import java.util.Optional;
+
+import io.atm.demo.dao.AccountRepository;
+import io.atm.demo.dao.TransactionRepository;
+import io.atm.demo.entities.Account;
+import io.atm.demo.entities.Transaction;
+import io.atm.demo.exceptions.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class accountService {
+public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -25,9 +27,14 @@ public class accountService {
     }
 
     // get account by id
-    public Account getAccountById(int id) {
-        Account account = this.accountRepository.findById(id);
-        return account;
+    public Account getAccountById(Long id) {
+        Optional<Account> accountOptional = this.accountRepository.findById(id);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            return account;
+        } else {
+            throw new CustomException("Invalid accountId");
+        }
     }
 
     // creating new account
@@ -37,11 +44,12 @@ public class accountService {
     }
 
     // update atm pin
-    public void updateAtmPin(int accountId, String pin) {
+    public void updateAtmPin(Long accountId, String pin) {
         // Retrieve the account by its ID
-        Account account = this.accountRepository.findById(accountId);
+        Optional<Account> accountOptional = this.accountRepository.findById(accountId);
 
-        if (account != null) {
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
             boolean result = account.setAtmPin(pin);
             if (result) {
                 accountRepository.save(account);
@@ -54,11 +62,12 @@ public class accountService {
     }
 
     // verify transaction
-    public boolean verifyTransaction(Transaction transaction, int accountId) {
+    public boolean verifyTransaction(Transaction transaction, Long accountId) {
         // Retrieve the account by its ID
-        Account account = this.accountRepository.findById(accountId);
+        Optional<Account> accountOptional = this.accountRepository.findById(accountId);
 
-        if (account != null) {
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
             double amount = transaction.getAmount();
             if (amount < 0 && account.getBalance() >= -amount) {
                 return false;
@@ -93,10 +102,16 @@ public class accountService {
     }
 
     public Account getAccountByAccountNumber(String AccountNumber) {
-        return this.accountRepository.findByAccountNumber(AccountNumber);
+        Optional<Account> accountOptional = this.accountRepository.findByAccountNumber(AccountNumber);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            return account;
+        } else {
+            throw new CustomException("Invalid AccountNumber");
+        }
     }
 
     // get pending transactions
-    // public 
+    // public
 
 }

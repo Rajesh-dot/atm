@@ -1,21 +1,20 @@
-package entities;
+package io.atm.demo.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private int id;
+    private Long id;
 
     private String username;
     private String password;
@@ -23,18 +22,17 @@ public class User {
 
     private String authToken;
 
-    public User(int id, String username, String password, String userType) {
-        this.id = id;
+    public User(String username, String password, String userType) {
         this.username = username;
         this.password = password;
         this.userType = userType;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,7 +52,7 @@ public class User {
         return this.authToken;
     }
 
-    public void logout(){
+    public void logout() {
         this.authToken = null;
     }
 

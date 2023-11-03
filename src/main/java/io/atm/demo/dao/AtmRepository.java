@@ -1,9 +1,11 @@
-package dao;
+package io.atm.demo.dao;
+
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import entities.Atm;
+import io.atm.demo.entities.Atm;
 
 public interface AtmRepository extends JpaRepository<Atm, Long> {
-    public Atm findById(int id);
+    public Optional<Atm> findById(Long id);
 }
