@@ -49,6 +49,9 @@ public class Account {
         this.atmNumber = UUID.randomUUID().toString();
     }
 
+    public Account() {
+    }
+
     public Long getId() {
         return id;
     }

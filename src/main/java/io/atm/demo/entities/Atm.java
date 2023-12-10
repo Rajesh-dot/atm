@@ -29,6 +29,9 @@ public class Atm {
         this.machineKey = "secretKey1";
     }
 
+    public Atm() {
+    }
+
     public Long getId() {
         return id;
     }

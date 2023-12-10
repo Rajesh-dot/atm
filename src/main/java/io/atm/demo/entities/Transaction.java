@@ -47,6 +47,9 @@ public class Transaction {
         this.sourceMachine = sourceMachine;
     }
 
+    public Transaction() {
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
