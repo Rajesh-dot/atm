@@ -21,10 +21,12 @@ public class Atm {
     private Bank bank;
 
     private double balance;
+    private String machineKey;
 
     public Atm(String name, Bank bank) {
         this.bank = bank;
         this.balance = 0;
+        this.machineKey = "secretKey1";
     }
 
     public Long getId() {
@@ -33,6 +35,10 @@ public class Atm {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean validateMachineKey(String machineKey) {
+        return this.machineKey == machineKey;
     }
 
     public Bank getBank() {

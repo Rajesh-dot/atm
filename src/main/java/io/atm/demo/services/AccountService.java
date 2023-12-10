@@ -6,7 +6,9 @@ import java.util.Optional;
 import io.atm.demo.dao.AccountRepository;
 import io.atm.demo.dao.TransactionRepository;
 import io.atm.demo.entities.Account;
+import io.atm.demo.entities.Bank;
 import io.atm.demo.entities.Transaction;
+import io.atm.demo.entities.User;
 import io.atm.demo.exceptions.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,12 @@ public class AccountService {
 
     // creating new account
     public Account createAccount(Account account) {
+        Account result = accountRepository.save(account);
+        return result;
+    }
+
+    public Account createAccount(Bank bank, User user) {
+        Account account = new Account(bank, user);
         Account result = accountRepository.save(account);
         return result;
     }

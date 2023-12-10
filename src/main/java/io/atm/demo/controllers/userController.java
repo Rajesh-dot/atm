@@ -49,7 +49,7 @@ public class userController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> Logout(@RequestParam String  authToken) {
+    public ResponseEntity<?> Logout(@RequestParam String authToken) {
         try {
             userService.logout(authToken);
             Map<String, String> response = new HashMap<>();

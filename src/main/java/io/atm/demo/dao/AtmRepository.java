@@ -8,4 +8,6 @@ import io.atm.demo.entities.Atm;
 
 public interface AtmRepository extends JpaRepository<Atm, Long> {
     public Optional<Atm> findById(Long id);
+
+    public Optional<Atm> findByMachineKey(String machineKey);
 }

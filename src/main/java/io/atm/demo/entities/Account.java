@@ -23,6 +23,7 @@ public class Account {
     private String accountNumber;
     private String atmPin;
     private double balance;
+    private String atmNumber;
 
     @ManyToOne
     private Bank bank;
@@ -36,6 +37,7 @@ public class Account {
         this.atmPin = atmPin;
         this.bank = bank;
         this.user = user;
+        this.atmNumber = UUID.randomUUID().toString();
     }
 
     public Account(Bank bank, User user) {
@@ -43,6 +45,8 @@ public class Account {
         this.accountNumber = generateRandomAccountNumber();
         this.bank = bank;
         this.user = user;
+        this.atmPin = "0000";
+        this.atmNumber = UUID.randomUUID().toString();
     }
 
     public Long getId() {
@@ -55,6 +59,14 @@ public class Account {
 
     public String getAccountNumber() {
         return accountNumber;
+    }
+
+    public String getAtmNumber() {
+        return this.atmNumber;
+    }
+
+    public boolean validateAtmNumber(String atmNumber) {
+        return this.atmNumber == atmNumber;
     }
 
     public boolean ValidateAtmPin(String atmPin) {
@@ -99,7 +111,7 @@ public class Account {
     }
 
     public boolean hasAccess(User user) {
-        if (user.getId() == user.getId()) {
+        if (this.user.getId() == user.getId()) {
             return true;
         } else {
             return false;

@@ -42,6 +42,10 @@ public class Bank {
         return name;
     }
 
+    public void setAdmin(User admin) {
+        this.admin = admin;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
