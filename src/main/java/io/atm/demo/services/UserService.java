@@ -44,6 +44,15 @@ public class UserService {
         }
     }
 
+    public User createUser(User user) {
+        if (!user.isManager()) {
+            User result = userRepository.save(user);
+            return result;
+        } else {
+            throw new CustomException("No Access");
+        }
+    }
+
     public User getUserByUsername(String username) {
         Optional<User> userOptional = this.userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
@@ -81,21 +90,15 @@ public class UserService {
         }
     }
 
-    public String loginUsingAtm(String atmNumber, String atmPin) {
-        Optional<Account> accountOptional = this.accountRepository.findByAtmNumber(atmNumber);
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            User user = account.getUser();
-            if (account.validateAtmPin(atmPin)) {
-                String authToken = UUID.randomUUID().toString();
-                user.setAuthToken(authToken);
-                this.userRepository.save(user);
-                return authToken;
-            } else {
-                throw new CustomException("Invalid password");
-            }
+    public Account loginUsingAtm(Account account, String atmPin) {
+        User user = account.getUser();
+        if (account.validateAtmPin(atmPin)) {
+            String authToken = UUID.randomUUID().toString();
+            user.setAuthToken(authToken);
+            this.userRepository.save(user);
+            return account;
         } else {
-            throw new CustomException("Invalid username");
+            throw new CustomException("Invalid password");
         }
     }
 

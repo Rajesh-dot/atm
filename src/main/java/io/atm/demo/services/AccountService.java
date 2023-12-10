@@ -57,20 +57,12 @@ public class AccountService {
     }
 
     // update atm pin
-    public void updateAtmPin(Long accountId, String pin) {
-        // Retrieve the account by its ID
-        Optional<Account> accountOptional = this.accountRepository.findById(accountId);
-
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            boolean result = account.setAtmPin(pin);
-            if (result) {
-                accountRepository.save(account);
-            } else {
-                throw new CustomException("Atm pin should be of 4 digits.");
-            }
+    public void updateAtmPin(Account account, String pin) {
+        boolean result = account.setAtmPin(pin);
+        if (result) {
+            accountRepository.save(account);
         } else {
-            throw new CustomException("Account not found");
+            throw new CustomException("Atm pin should be of 4 digits.");
         }
     }
 

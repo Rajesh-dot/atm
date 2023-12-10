@@ -36,6 +36,41 @@ public class accountController {
     @Autowired
     AtmService atmService;
 
+    @GetMapping("/getAccountDetails")
+    public ResponseEntity<?> getAccountDetails(@RequestParam String atmNumber, @RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            Account account = accountService.getAccountByAtmNumber(atmNumber);
+            if (account.getUser() == user) {
+                Map<String, Account> response = new HashMap<>();
+                response.put("account", account);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("No Access to account");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/resetAtmPin")
+    public ResponseEntity<?> resetAtmPin(@RequestParam String accountNo, @RequestParam String atmNumber,
+            @RequestParam String newPin) {
+        try {
+            Account account = accountService.getAccountByAccountNumber(accountNo);
+            if (account == accountService.getAccountByAtmNumber(atmNumber)) {
+                accountService.updateAtmPin(account, newPin);
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "ok");
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("No Access to account");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/changeAtmPin")
     public ResponseEntity<?> changeAtmPin(@RequestParam String accountNo, @RequestParam String newPassword,
             @RequestParam String authToken) {
@@ -43,9 +78,26 @@ public class accountController {
             User user = userService.getUserByAuthToken(authToken);
             Account account = accountService.getAccountByAccountNumber(accountNo);
             if (account.hasAccess(user)) {
-                accountService.updateAtmPin(account.getId(), newPassword);
+                accountService.updateAtmPin(account, newPassword);
                 Map<String, String> response = new HashMap<>();
                 response.put("status", "ok");
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("No Access to account");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getBalance")
+    public ResponseEntity<?> getBalance(@RequestParam String accountNo, @RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            Account account = accountService.getAccountByAccountNumber(accountNo);
+            if (account.getUser() == user) {
+                Map<String, Double> response = new HashMap<>();
+                response.put("Balance", account.getBalance());
                 return ResponseEntity.ok(response);
             } else {
                 throw new CustomException("No Access to account");
@@ -73,6 +125,31 @@ public class accountController {
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Balance");
                     }
+                } else {
+                    throw new CustomException("Invalid ATM pin");
+                }
+            } else {
+                throw new CustomException("No Access to account");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/depositMoney")
+    public ResponseEntity<?> depositMoney(@RequestParam String accountNo, @RequestParam Double amount,
+            @RequestParam String pin, @RequestParam String authToken, @RequestParam String machineKey) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            Atm sourceMachine = atmService.getAtmByMachineKey(machineKey);
+            Account account = accountService.getAccountByAccountNumber(accountNo);
+            if (account.hasAccess(user)) {
+                if (account.validateAtmPin(pin)) {
+                    Transaction transaction = new Transaction(account, amount, "withDraw", sourceMachine);
+                    transactionService.createTransaction(transaction);
+                    Map<String, Transaction> response = new HashMap<>();
+                    response.put("transaction", transaction);
+                    return ResponseEntity.ok(response);
                 } else {
                     throw new CustomException("Invalid ATM pin");
                 }
