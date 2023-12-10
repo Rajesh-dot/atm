@@ -21,7 +21,7 @@ public class UserService {
     @Autowired
     private AccountRepository accountRepository;
 
-    private String superAdminKey = "dummy key";
+    private String superAdminKey = "dummyKey";
 
     // get user by id
     public User getUserById(Long id) {
@@ -36,7 +36,7 @@ public class UserService {
 
     // creating new user
     public User createUser(User user, String key) {
-        if (key == this.superAdminKey) {
+        if (this.superAdminKey.equals(key)) {
             User result = userRepository.save(user);
             return result;
         } else {

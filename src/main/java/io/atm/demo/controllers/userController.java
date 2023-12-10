@@ -50,8 +50,10 @@ public class userController {
     }
 
     @GetMapping("/createUser")
-    public ResponseEntity<?> Register(@RequestParam User user, @RequestParam String key) {
+    public ResponseEntity<?> Register(@RequestParam String username, @RequestParam String password,
+            @RequestParam String userType, @RequestParam String key) {
         try {
+            User user = new User(username, password, userType);
             User responseUser = userService.createUser(user, key);
             Map<String, User> response = new HashMap<>();
             response.put("user", responseUser);
