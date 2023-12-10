@@ -63,21 +63,94 @@ public class accountController {
             Atm sourceMachine = atmService.getAtmByMachineKey(machineKey);
             Account account = accountService.getAccountByAccountNumber(accountNo);
             if (account.hasAccess(user)) {
-                if (account.ValidateAtmPin(pin)) {
+                if (account.validateAtmPin(pin)) {
                     if (account.getBalance() >= amount) {
-                        Transaction transaction = new Transaction(account, amount, "withDraw", sourceMachine);
+                        Transaction transaction = new Transaction(account, -amount, "withDraw", sourceMachine);
                         transactionService.createTransaction(transaction);
+                        Map<String, Transaction> response = new HashMap<>();
+                        response.put("transaction", transaction);
+                        return ResponseEntity.ok(response);
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Balance");
                     }
                 } else {
                     throw new CustomException("Invalid ATM pin");
                 }
-                Map<String, String> response = new HashMap<>();
-                response.put("status", "ok");
-                return ResponseEntity.ok(response);
             } else {
                 throw new CustomException("No Access to account");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/updateTransactionStatus")
+    public ResponseEntity<?> updateTransactionStatus(@RequestParam int status, @RequestParam Long transactionId,
+            @RequestParam String machineKey) {
+        try {
+            Atm atm = atmService.getAtmByMachineKey(machineKey);
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction.getSourceMachine() == atm) {
+                transactionService.updateStatus(transaction, status);
+                Map<String, Transaction> response = new HashMap<>();
+                response.put("transaction", transaction);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("Invalid request");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/applyTransaction")
+    public ResponseEntity<?> applyTransaction(@RequestParam Long transactionId, @RequestParam String machineKey) {
+        try {
+            Atm atm = atmService.getAtmByMachineKey(machineKey);
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction.getSourceMachine() == atm) {
+                accountService.applyTransaction(transaction);
+                Map<String, Transaction> response = new HashMap<>();
+                response.put("transaction", transaction);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("Invalid request");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/cancelTransaction")
+    public ResponseEntity<?> cancelTransaction(@RequestParam Long transactionId, @RequestParam String machineKey) {
+        try {
+            Atm atm = atmService.getAtmByMachineKey(machineKey);
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction.getSourceMachine() == atm) {
+                accountService.cancelTransaction(transaction);
+                Map<String, Transaction> response = new HashMap<>();
+                response.put("transaction", transaction);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("Invalid request");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/revertTransaction")
+    public ResponseEntity<?> revertTransactio (@RequestParam Long transactionId, @RequestParam String machineKey) {
+        try {
+            Atm atm = atmService.getAtmByMachineKey(machineKey);
+            Transaction transaction = transactionService.getTransactionById(transactionId);
+            if (transaction.getSourceMachine() == atm) {
+                accountService.revertTransaction(transaction);
+                Map<String, Transaction> response = new HashMap<>();
+                response.put("transaction", transaction);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("Invalid request");
             }
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

@@ -2,6 +2,7 @@ package io.atm.demo.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,38 @@ public class atmController {
             Map<String, Double> response = new HashMap<>();
             response.put("balance", atm.getBalance());
             return ResponseEntity.ok(response);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/addFundsToAtm")
+    public ResponseEntity<?> addFunds(@RequestParam Long atmId, @RequestParam Double amount,
+            @RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            Atm atm = atmService.getAtmById(atmId, user);
+            atmService.addBalance(atm, amount, user);
+            Map<String, Double> response = new HashMap<>();
+            response.put("balance", atm.getBalance());
+            return ResponseEntity.ok(response);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAllAtms")
+    public ResponseEntity<?> addFunds(@RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            if (user.isManager()) {
+                List<Atm> atms = atmService.findAtmsByBankManager(user);
+                Map<String, List<Atm>> response = new HashMap<>();
+                response.put("atms", atms);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No permission");
+            }
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

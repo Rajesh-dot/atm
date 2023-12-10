@@ -38,7 +38,7 @@ public class Atm {
     }
 
     public boolean validateMachineKey(String machineKey) {
-        return this.machineKey == machineKey;
+        return this.machineKey.equals(machineKey);
     }
 
     public Bank getBank() {

@@ -65,6 +65,10 @@ public class User {
         return this.password.equals(password);
     }
 
+    public boolean isManager() {
+        return this.userType.equalsIgnoreCase("manager");
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", userType=" + userType + "]";

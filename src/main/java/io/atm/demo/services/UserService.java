@@ -1,7 +1,9 @@
 package io.atm.demo.services;
 
+import io.atm.demo.dao.AccountRepository;
 import io.atm.demo.dao.UserRepository;
 import io.atm.demo.entities.User;
+import io.atm.demo.entities.Account;
 import io.atm.demo.exceptions.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     private String superAdminKey = "dummy key";
 
@@ -64,6 +69,24 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (user.validatePassword(password)) {
+                String authToken = UUID.randomUUID().toString();
+                user.setAuthToken(authToken);
+                this.userRepository.save(user);
+                return authToken;
+            } else {
+                throw new CustomException("Invalid password");
+            }
+        } else {
+            throw new CustomException("Invalid username");
+        }
+    }
+
+    public String loginUsingAtm(String atmNumber, String atmPin) {
+        Optional<Account> accountOptional = this.accountRepository.findByAtmNumber(atmNumber);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            User user = account.getUser();
+            if (account.validateAtmPin(atmPin)) {
                 String authToken = UUID.randomUUID().toString();
                 user.setAuthToken(authToken);
                 this.userRepository.save(user);

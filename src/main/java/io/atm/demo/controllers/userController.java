@@ -21,15 +21,29 @@ public class userController {
     private UserService userService;
 
     @GetMapping("/login")
-    public ResponseEntity<?> Login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> Login(@RequestParam(required = false) String username,
+            @RequestParam(required = false) String password, @RequestParam(required = false) String atmNumber,
+            @RequestParam(required = false) String atmPin) {
         try {
-            String authToken = userService.login(username, password);
-            // Create a response with the token
-            Map<String, String> response = new HashMap<>();
-            response.put("authToken", authToken);
+            if (username != null && password != null) {
+                String authToken = userService.login(username, password);
+                // Create a response with the token
+                Map<String, String> response = new HashMap<>();
+                response.put("authToken", authToken);
 
-            // Return the response with the token
-            return ResponseEntity.ok(response);
+                // Return the response with the token
+                return ResponseEntity.ok(response);
+            } else if (atmNumber != null && atmPin != null) {
+                String authToken = userService.loginUsingAtm(atmNumber, atmPin);
+                // Create a response with the token
+                Map<String, String> response = new HashMap<>();
+                response.put("authToken", authToken);
+
+                // Return the response with the token
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.badRequest().body("Invalid login request");
+            }
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

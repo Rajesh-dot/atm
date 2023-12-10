@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import io.atm.demo.dao.AccountRepository;
+import io.atm.demo.dao.AtmRepository;
 import io.atm.demo.dao.TransactionRepository;
 import io.atm.demo.entities.Account;
+import io.atm.demo.entities.Atm;
 import io.atm.demo.entities.Bank;
 import io.atm.demo.entities.Transaction;
 import io.atm.demo.entities.User;
@@ -22,6 +24,9 @@ public class AccountService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private AtmRepository atmRepository;
 
     // Method to get all transactions for a given account
     public List<Transaction> getAllTransactionsForAccount(Account account) {
@@ -88,11 +93,15 @@ public class AccountService {
     }
 
     // apply transaction
-    public void applyTransaction(Transaction transaction, Account account) {
+    public void applyTransaction(Transaction transaction) {
+        Account account = transaction.getAccount();
         boolean result = account.applyTransaction(transaction);
         if (result) {
             accountRepository.save(account);
             transaction.updateStatus(2);
+            Atm atm = transaction.getSourceMachine();
+            atm.addBalance(transaction.getAmount());
+            this.atmRepository.save(atm);
             this.transactionRepository.save(transaction);
         } else {
             transaction.updateStatus(-1);
@@ -102,15 +111,31 @@ public class AccountService {
     }
 
     // revert transaction
-    public void revertTransaction(Transaction transaction, Account account) {
+    public void revertTransaction(Transaction transaction) {
+        Account account = transaction.getAccount();
         account.revertTransaction(transaction);
         accountRepository.save(account);
         transaction.updateStatus(-2);
         this.transactionRepository.save(transaction);
     }
 
+    public void cancelTransaction(Transaction transaction) {
+        transaction.updateStatus(-1);
+        this.transactionRepository.save(transaction);
+    }
+
     public Account getAccountByAccountNumber(String AccountNumber) {
         Optional<Account> accountOptional = this.accountRepository.findByAccountNumber(AccountNumber);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            return account;
+        } else {
+            throw new CustomException("Invalid AccountNumber");
+        }
+    }
+
+    public Account getAccountByAtmNumber(String atmNumber) {
+        Optional<Account> accountOptional = this.accountRepository.findByAtmNumber(atmNumber);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             return account;

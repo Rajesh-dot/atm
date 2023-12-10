@@ -7,6 +7,7 @@ import io.atm.demo.entities.User;
 import io.atm.demo.exceptions.CustomException;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,8 +50,22 @@ public class AtmService {
             Atm result = atmRepository.save(atm);
             return result;
         } else {
-            throw new CustomException("Didn't have permission to create user");
+            throw new CustomException("Didn't have permission to create atm");
         }
+    }
+
+    public void addBalance(Atm atm, Double amount, User user) {
+        Bank bank = atm.getBank();
+        if (bank.isBankAdmin(user)) {
+            atm.addBalance(amount);
+            this.atmRepository.save(atm);
+        } else {
+            throw new CustomException("Didn't have permission to perform this action");
+        }
+    }
+
+    public List<Atm> findAtmsByBankManager(User user) {
+        return atmRepository.findAtmsByBankAdmin(user);
     }
 
 }

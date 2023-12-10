@@ -57,6 +57,10 @@ public class Account {
         this.id = id;
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -66,10 +70,10 @@ public class Account {
     }
 
     public boolean validateAtmNumber(String atmNumber) {
-        return this.atmNumber == atmNumber;
+        return this.atmNumber.equals(atmNumber);
     }
 
-    public boolean ValidateAtmPin(String atmPin) {
+    public boolean validateAtmPin(String atmPin) {
         if (this.atmPin == null && atmPin == null) {
             return true;
         } else if (this.atmPin == null || atmPin == null) {
