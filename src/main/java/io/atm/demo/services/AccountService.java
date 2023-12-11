@@ -51,9 +51,14 @@ public class AccountService {
     }
 
     public Account createAccount(Bank bank, User user) {
-        Account account = new Account(bank, user);
-        Account result = accountRepository.save(account);
-        return result;
+        List<Account> accounts = accountRepository.findByUser(user);
+        if(accounts.isEmpty()) {
+            Account account = new Account(bank, user);
+            Account result = accountRepository.save(account);
+            return result;
+        } else {
+            throw new CustomException("Already had an account");
+        }
     }
 
     // update atm pin

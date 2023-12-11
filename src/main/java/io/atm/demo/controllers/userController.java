@@ -59,7 +59,7 @@ public class userController {
     public ResponseEntity<?> createManager(@RequestParam String username, @RequestParam String password,
             @RequestParam String key) {
         try {
-            User user = new User(username, password, "manager");
+            User user = new User(username, password, "manager", "BankId");
             User responseUser = userService.createUser(user, key);
             Map<String, User> response = new HashMap<>();
             response.put("user", responseUser);
@@ -72,19 +72,14 @@ public class userController {
 
     @GetMapping("/createUser")
     public ResponseEntity<?> Register(@RequestParam String username, @RequestParam String password,
-            @RequestParam String authToken) {
+            @RequestParam String socialSecurityNumber) {
         try {
-            User manager = userService.getUserByAuthToken(authToken);
-            if (manager.isManager()) {
-                User user = new User(username, password, "user");
-                User responseUser = userService.createUser(user);
-                Map<String, User> response = new HashMap<>();
-                response.put("user", responseUser);
-                // Return the response with the token
-                return ResponseEntity.ok(response);
-            } else {
-                throw new CustomException("No Access");
-            }
+            User user = new User(username, password, "user", socialSecurityNumber);
+            User responseUser = userService.createUser(user);
+            Map<String, User> response = new HashMap<>();
+            response.put("user", responseUser);
+            // Return the response with the token
+            return ResponseEntity.ok(response);
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

@@ -19,13 +19,15 @@ public class User {
     private String username;
     private String password;
     private String userType;
+    private String socialSecurityNumber;
 
     private String authToken;
 
-    public User(String username, String password, String userType) {
+    public User(String username, String password, String userType, String socialSecurityNumber) {
         this.username = username;
         this.password = password;
         this.userType = userType;
+        this.socialSecurityNumber = socialSecurityNumber;
     }
 
     public User() {
@@ -41,6 +43,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getSocialSecurityNumber() {
+        return socialSecurityNumber;
     }
 
     public void setPassword(String password) {

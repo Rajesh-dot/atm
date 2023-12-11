@@ -46,8 +46,13 @@ public class UserService {
 
     public User createUser(User user) {
         if (!user.isManager()) {
-            User result = userRepository.save(user);
-            return result;
+            Optional<User> userOptional = this.userRepository.findBySocialSecurityNumber(user.getSocialSecurityNumber());
+            if(!userOptional.isPresent()) {
+                User result = userRepository.save(user);
+                return result;
+            } else {
+                throw new CustomException("Duplicate Social Security Number");
+            }
         } else {
             throw new CustomException("No Access");
         }
@@ -60,6 +65,16 @@ public class UserService {
             return user;
         } else {
             throw new CustomException("Invalid username");
+        }
+    }
+
+    public User getUserBySocialSecurityNumber(String socialSecurityNumber) {
+        Optional<User> userOptional = this.userRepository.findBySocialSecurityNumber(socialSecurityNumber);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user;
+        } else {
+            throw new CustomException("Invalid social security number");
         }
     }
 

@@ -31,14 +31,17 @@ public class bankController {
     private AccountService accountService;
 
     @GetMapping("/createBank")
-    public ResponseEntity<?> createBank(@RequestParam String bankName, @RequestParam Long userId) {
+    public ResponseEntity<?> createBank(@RequestParam String bankName, @RequestParam String authToken) {
         try {
-            User user = userService.getUserById(userId);
-            Bank responseBank = bankService.createBank(bankName, user);
-            Map<String, Bank> response = new HashMap<>();
-            response.put("bank", responseBank);
-            return ResponseEntity.ok(response);
-
+            User user = userService.getUserByAuthToken(authToken);
+            if (user.isManager()) {
+                Bank responseBank = bankService.createBank(bankName, user);
+                Map<String, Bank> response = new HashMap<>();
+                response.put("bank", responseBank);
+                return ResponseEntity.ok(response);
+            } else {
+                throw new CustomException("No Permission");
+            }
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

@@ -1,0 +1,5 @@
+mvn clean install
+docker login -u rajeshkaipa -p dckr_pat_wvn3YneCt3IVQZlinuNCgX5ms48
+docker build -t atm .
+docker tag atm rajeshkaipa/atm:latest
+docker push rajeshkaipa/atm:latest
