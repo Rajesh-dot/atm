@@ -1,6 +1,5 @@
 package io.atm.demo.services;
 
-import io.atm.demo.dao.AccountRepository;
 import io.atm.demo.dao.UserRepository;
 import io.atm.demo.entities.User;
 import io.atm.demo.entities.Account;
@@ -17,9 +16,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
 
     private String superAdminKey = "dummyKey";
 
