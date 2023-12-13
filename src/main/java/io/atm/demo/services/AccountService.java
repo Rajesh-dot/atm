@@ -11,6 +11,7 @@ import io.atm.demo.entities.Atm;
 import io.atm.demo.entities.Bank;
 import io.atm.demo.entities.Transaction;
 import io.atm.demo.entities.User;
+import io.atm.demo.services.AtmService;
 import io.atm.demo.exceptions.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class AccountService {
 
     @Autowired
     private AtmRepository atmRepository;
+
+    @Autowired
+    private AtmService atmService;
 
     // Method to get all transactions for a given account
     public List<Transaction> getAllTransactionsForAccount(Account account) {
@@ -118,6 +122,8 @@ public class AccountService {
 
     public void cancelTransaction(Transaction transaction) {
         transaction.updateStatus(-1);
+        Atm atm = transaction.getSourceMachine();
+        atmService.updateWorkingStatus(atm, false);
         this.transactionRepository.save(transaction);
     }
 

@@ -57,7 +57,7 @@ public class atmController {
         try {
             User user = userService.getUserByAuthToken(authToken);
             if(user.isManager()) {
-                Atm atm = atmService.getAtmById(atmId, user);
+                Atm atm = atmService.getAtmById(atmId);
                 Map<String, Double> response = new HashMap<>();
                 response.put("balance", atm.getBalance());
                 return ResponseEntity.ok(response);
@@ -75,7 +75,7 @@ public class atmController {
         try {
             User user = userService.getUserByAuthToken(authToken);
             if(user.isManager()) {
-                Atm atm = atmService.getAtmById(atmId, user);
+                Atm atm = atmService.getAtmById(atmId);
                 atmService.addBalance(atm, amount, user);
                 Map<String, Double> response = new HashMap<>();
                 response.put("balance", atm.getBalance());
@@ -100,6 +100,18 @@ public class atmController {
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No Permission");
             }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAtmDetails")
+    public ResponseEntity<?> addFunds(@RequestParam Long atmId) {
+        try {
+            Atm atm = atmService.getAtmById(atmId);
+            Map<String, Atm> response = new HashMap<>();
+            response.put("atm", atm);
+            return ResponseEntity.ok(response);
         } catch (CustomException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

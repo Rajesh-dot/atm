@@ -22,11 +22,13 @@ public class Atm {
 
     private double balance;
     private String machineKey;
+    private boolean isWorking;
 
     public Atm(String name, Bank bank) {
         this.bank = bank;
         this.balance = 0;
         this.machineKey = "secretKey1";
+        this.isWorking = true;
     }
 
     public Atm() {
@@ -50,6 +52,14 @@ public class Atm {
 
     public double getBalance() {
         return this.balance;
+    }
+
+    public boolean getIsWorking() {
+        return this.isWorking;
+    }
+
+    public void setIsWorking(boolean isWorking) {
+        this.isWorking = isWorking;
     }
 
     public void addBalance(double amount) {
