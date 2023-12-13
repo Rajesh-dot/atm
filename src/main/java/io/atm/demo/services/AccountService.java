@@ -11,7 +11,6 @@ import io.atm.demo.entities.Atm;
 import io.atm.demo.entities.Bank;
 import io.atm.demo.entities.Transaction;
 import io.atm.demo.entities.User;
-import io.atm.demo.services.AtmService;
 import io.atm.demo.exceptions.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
