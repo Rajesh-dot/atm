@@ -173,6 +173,9 @@ public class accountController {
             Transaction transaction = transactionService.getTransactionById(transactionId);
             if (transaction.getSourceMachine() == atm) {
                 transactionService.updateStatus(transaction, status);
+                if(status == 2) {
+                    accountService.applyTransaction(transaction);
+                }
                 Map<String, Transaction> response = new HashMap<>();
                 response.put("transaction", transaction);
                 return ResponseEntity.ok(response);
