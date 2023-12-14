@@ -117,11 +117,15 @@ public class accountController {
             if (account.hasAccess(user)) {
                 if (account.validateAtmPin(pin)) {
                     if (account.getBalance() >= amount) {
-                        Transaction transaction = new Transaction(account, -amount, "withDraw", sourceMachine);
-                        transactionService.createTransaction(transaction);
-                        Map<String, Transaction> response = new HashMap<>();
-                        response.put("transaction", transaction);
-                        return ResponseEntity.ok(response);
+                        if (sourceMachine.getBalance() >= amount) {
+                            Transaction transaction = new Transaction(account, -amount, "withDraw", sourceMachine);
+                            transactionService.createTransaction(transaction);
+                            Map<String, Transaction> response = new HashMap<>();
+                            response.put("transaction", transaction);
+                            return ResponseEntity.ok(response);
+                        } else {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Funds in Machine");
+                        }
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient Balance");
                     }
