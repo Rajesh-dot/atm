@@ -64,6 +64,15 @@ public class AccountService {
         }
     }
 
+    public Account getAccountFromUser(User user) {
+        List<Account> accounts = accountRepository.findByUser(user);
+        if (accounts.isEmpty()) {
+            throw new CustomException("No Accounts Found");
+        } else {
+            return accounts.get(0);
+        }
+    }
+
     // update atm pin
     public void updateAtmPin(Account account, String pin) {
         boolean result = account.setAtmPin(pin);

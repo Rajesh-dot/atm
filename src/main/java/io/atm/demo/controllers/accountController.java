@@ -53,6 +53,19 @@ public class accountController {
         }
     }
 
+    @GetMapping("/getAccountDetailsFromUser")
+    public ResponseEntity<?> getAccountDetailsFromUser(@RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            Account account = accountService.getAccountFromUser(user);
+            Map<String, Account> response = new HashMap<>();
+            response.put("account", account);
+            return ResponseEntity.ok(response);
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/resetAtmPin")
     public ResponseEntity<?> resetAtmPin(@RequestParam String accountNo, @RequestParam String atmNumber,
             @RequestParam String newPin) {
