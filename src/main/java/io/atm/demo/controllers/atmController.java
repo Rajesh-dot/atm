@@ -117,4 +117,23 @@ public class atmController {
         }
     }
 
+    @GetMapping("/updateAtmWorkingStatus")
+    public ResponseEntity<?> updateStatus(@RequestParam Long atmId, @RequestParam boolean status,
+            @RequestParam String authToken) {
+        try {
+            User user = userService.getUserByAuthToken(authToken);
+            if (user.isManager()) {
+                Atm atm = atmService.getAtmById(atmId);
+                atmService.updateWorkingStatus(atm, status);
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "ok");
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No Permission");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
 }
