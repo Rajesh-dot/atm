@@ -71,11 +71,12 @@ public class accountController {
     }
 
     @GetMapping("/resetAtmPin")
-    public ResponseEntity<?> resetAtmPin(@RequestParam String accountNo, @RequestParam String atmNumber,
+    public ResponseEntity<?> resetAtmPin(@RequestParam String accountNo, @RequestParam String authToken,
             @RequestParam String newPin) {
         try {
             Account account = accountService.getAccountByAccountNumber(accountNo);
-            if (account == accountService.getAccountByAtmNumber(atmNumber)) {
+            User user = userService.getUserByAuthToken(authToken);
+            if (account.getUser() == user) {
                 accountService.updateAtmPin(account, newPin);
                 Map<String, String> response = new HashMap<>();
                 response.put("status", "ok");
