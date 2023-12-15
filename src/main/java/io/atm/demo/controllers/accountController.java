@@ -37,18 +37,14 @@ public class accountController {
     AtmService atmService;
 
     @GetMapping("/getAccountDetails")
-    public ResponseEntity<?> getAccountDetails(@RequestParam String atmNumber, @RequestParam String authToken, @RequestParam String pin) {
+    public ResponseEntity<?> getAccountDetails(@RequestParam String atmNumber, @RequestParam String authToken) {
         try {
             User user = userService.getUserByAuthToken(authToken);
             Account account = accountService.getAccountByAtmNumber(atmNumber);
             if (account.getUser() == user) {
-                if(account.validateAtmPin(pin)) {
-                    Map<String, Account> response = new HashMap<>();
-                    response.put("account", account);
-                    return ResponseEntity.ok(response);
-                } else {
-                    throw new CustomException("Invalid Pin");
-                }
+                Map<String, Account> response = new HashMap<>();
+                response.put("account", account);
+                return ResponseEntity.ok(response);
             } else {
                 throw new CustomException("No Access to account");
             }
@@ -109,14 +105,19 @@ public class accountController {
     }
 
     @GetMapping("/getBalance")
-    public ResponseEntity<?> getBalance(@RequestParam String accountNo, @RequestParam String authToken) {
+    public ResponseEntity<?> getBalance(@RequestParam String accountNo, @RequestParam String authToken,
+            @RequestParam String pin) {
         try {
             User user = userService.getUserByAuthToken(authToken);
             Account account = accountService.getAccountByAccountNumber(accountNo);
             if (account.getUser() == user) {
-                Map<String, Double> response = new HashMap<>();
-                response.put("Balance", account.getBalance());
-                return ResponseEntity.ok(response);
+                if (account.validateAtmPin(pin)) {
+                    Map<String, Double> response = new HashMap<>();
+                    response.put("Balance", account.getBalance());
+                    return ResponseEntity.ok(response);
+                } else {
+                    throw new CustomException("Invalid Pin");
+                }
             } else {
                 throw new CustomException("No Access to account");
             }
